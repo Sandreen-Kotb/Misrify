@@ -168,7 +168,8 @@ export const logout = async (req, res) => {
     if (refreshToken) {
         const decodedToken = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN);
 
-        await redis.del(`refreshToken_${decodedToken.userId}`);
+        // Redis temporarily disabled for Vercel deployment
+        // await redis.del(`refreshToken_${decodedToken.userId}`);
     }
 
     res.clearCookie("accessToken");
@@ -188,11 +189,11 @@ export const reCreateAccessToken = async (req, res, next) => {
 
     const decodedToken = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN);
 
-    const storedToken = await redis.get(`refreshToken_${decodedToken.userId}`);
-
-    if (refreshToken !== storedToken) {
-        return next(new AppError("Unauthorized, Invalid Refresh Token", 401))
-    }
+    // Redis temporarily disabled for Vercel deployment
+    // const storedToken = await redis.get(`refreshToken_${decodedToken.userId}`);
+    // if (refreshToken !== storedToken) {
+    //     return next(new AppError("Unauthorized, Invalid Refresh Token", 401))
+    // }
 
     const newAccessToken = jwt.sign({ userId: decodedToken.userId }, process.env.JWT_SECRET, { expiresIn: '15m' })
 

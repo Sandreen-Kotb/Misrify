@@ -10,7 +10,9 @@ export const generateToken = (userId) => {
 }
 
 export const storeTokenInRedis = async (userId, refreshToken) => {
-    await redis.set(`refreshToken_${userId}`, refreshToken, 'EX', 60 * 60 * 24 * 7)
+    // Redis temporarily disabled for Vercel deployment
+    // await redis.set(`refreshToken_${userId}`, refreshToken, 'EX', 60 * 60 * 24 * 7)
+    console.log('Redis disabled - token storage skipped for user:', userId);
 }
 
 export const storeTokenInCookies = (res, accessToken, refreshToken) => {
