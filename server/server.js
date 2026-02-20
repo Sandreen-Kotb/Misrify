@@ -2,6 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser';
 import cors from "cors";
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { connectDb } from './lib/connectDb.js';
 import { wrapRoutes } from './routes/index.routes.js';
 import bodyParser from 'body-parser'
@@ -16,11 +18,17 @@ import { updateMerchantAnalytics } from './controllers/merchantAnalytics.control
 
 dotenv.config()
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const port = process.env.PORT || 5000;
 
 // Security middleware
-app.use(helmet())
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}))
 
 // Rate limiting
 // const limiter = rateLimit({
@@ -32,7 +40,12 @@ app.use(helmet())
 // Compression
 app.use(compression())
 
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }))
+// CORS configuration
+const corsOptions = {
+    origin: process.env.CLIENT_URL || true,
+    credentials: true
+};
+app.use(cors(corsOptions))
 
 app.use(express.json())
 
@@ -40,7 +53,19 @@ app.use(bodyParser.json());
 
 app.use(cookieParser())
 
+// API routes
 wrapRoutes(app)
+
+// Serve static files from React app in production
+if (process.env.NODE_ENV === 'production') {
+    const clientDistPath = path.join(__dirname, '../client/dist');
+    app.use(express.static(clientDistPath));
+    
+    // Handle React routing, return all requests to React app
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(clientDistPath, 'index.html'));
+    });
+}
 
 app.use(errorHandler);
 
@@ -57,4 +82,3 @@ app.listen(port, () => {
     console.log('Server Running in ' + process.env.NODE_ENV + 'Environment on port ' + port);
     connectDb()
 })
-
