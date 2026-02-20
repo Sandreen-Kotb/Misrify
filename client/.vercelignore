@@ -1,0 +1,35 @@
+# Vercel Ignore File for Frontend
+# Files and directories to exclude from deployment
+
+# Test files
+**/__tests__/
+*.test.js
+*.test.jsx
+*.spec.js
+*.spec.jsx
+
+# Development tools
+.vscode/
+.idea/
+
+# Build artifacts (will be rebuilt)
+node_modules/
+dist/
+dist-ssr/
+
+# Environment files (use Vercel env vars)
+.env
+.env.local
+.env.development
+.env.production
+
+# Reports and coverage
+reports/
+coverage/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

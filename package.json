@@ -5,9 +5,10 @@
   "main": "server.js",
   "scripts": {
     "dev": "SET NODE_ENV=development & nodemon server/server.js",
-    "start": "SET NODE_ENV=production & nodemon server/server.js",
+    "start": "node server/server.js",
     "build": "npm install && npm install --prefix client",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "vercel-build": "echo 'Backend build complete'"
   },
   "keywords": [],
   "author": "Ahmed Algrgawy | Reem Ghareeb",
