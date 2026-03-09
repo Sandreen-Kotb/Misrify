@@ -14,8 +14,7 @@ function App() {
   injectStore(store);
   useEffect(() => {
     const authenticate = async () => {
-      const token = localStorage.getItem('token');
-      if (token && !isAuthenticated && !hasCheckedAuth) {
+      if (!hasCheckedAuth) {
         setLoading(true);
         try {
           await dispatch(checkAuth()).unwrap();
@@ -27,7 +26,7 @@ function App() {
       }
     };
     authenticate();
-  }, [dispatch, isAuthenticated, hasCheckedAuth]);
+  }, [dispatch, hasCheckedAuth]);
 
   return (
     <>

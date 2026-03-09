@@ -201,7 +201,7 @@ export const reCreateAccessToken = async (req, res, next) => {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development',
         sameSite: 'strict',
-        maxAge: 60 * 60 * 24 * 7 * 1000
+        maxAge: 15 * 60 * 1000
     })
 
     return res.status(200).json({ success: true, message: "Access Token Recreated" })

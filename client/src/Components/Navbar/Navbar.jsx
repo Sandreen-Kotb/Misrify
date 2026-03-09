@@ -23,19 +23,19 @@ const Navbar = memo(() => {
   };
 
   const menuItems =
-    isAuthenticated && user.role !== "user"
+    isAuthenticated && user?.role !== "user"
       ? [
-          { name: "Home", path: "/" },
-          { name: "About", path: "/aboutus" },
+        { name: "Home", path: "/" },
+        { name: "About", path: "/aboutus" },
         { name: "Dashboard", path: "/analytics" },
-          { name: "Contact Us", path: "/contact" },
-        ]
+        { name: "Contact Us", path: "/contact" },
+      ]
       : [
-          { name: "Home", path: "/" },
-          { name: "About", path: "/aboutus" },
-          { name: "Contact Us", path: "/contact" },
-          { name: "Students", path: "/students" },
-        ];
+        { name: "Home", path: "/" },
+        { name: "About", path: "/aboutus" },
+        { name: "Contact Us", path: "/contact" },
+        { name: "Students", path: "/students" },
+      ];
 
   return (
     <div className="fixed top-0 left-0 w-full bg-white shadow-lg z-50">
@@ -57,9 +57,8 @@ const Navbar = memo(() => {
         {/* Mobile */}
         <div
           className={`fixed top-0 right-0 h-full w-64 bg-bg-main z-50 transition-transform duration-300 ease-in-out transform
-                 md:hidden ${
-                   isMenuOpen ? "translate-x-0" : "translate-x-full"
-                 }`}
+                 md:hidden ${isMenuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
         >
           <ul className="flex flex-col p-4 space-y-4">
             {menuItems.map((item, index) => (

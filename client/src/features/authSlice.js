@@ -80,8 +80,6 @@ export const logoutUser = createAsyncThunk( "auth/logout",
   async (_, { dispatch, rejectWithValue }) => {
     try {
       await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
       dispatch(logout());
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Logout failed");
@@ -97,7 +95,6 @@ const authSlice = createSlice({
     error: null,
     verified: false,
     isAuthenticated: false,
-    accessToken: null,
     otp: null,
     hasCheckedAuth: false
   },
@@ -105,10 +102,6 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      state.accessToken = null;
-    },
-    setAccessToken: (state, action) => {
-      state.accessToken = action.payload;
     },
     setOtp: (state, action) => {
       state.otp = action.payload;
@@ -141,8 +134,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
-         localStorage.setItem('token',  JSON.stringify(action.payload.token));
-         localStorage.setItem('user', JSON.stringify(action.payload.user));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -203,11 +194,10 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
-        state.accessToken = null;
         state.hasCheckedAuth = true;
       });
   },
 });
 
-export const { logout, setAccessToken, setOtp, clearError } = authSlice.actions;
+export const { logout, setOtp, clearError } = authSlice.actions;
 export default authSlice.reducer;

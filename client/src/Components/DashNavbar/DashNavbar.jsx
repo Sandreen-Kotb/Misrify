@@ -31,7 +31,7 @@ const DashNavbar = () => {
                   {user.name}
                 </span>
                 <span className="text-base capitalize text-second-grey">
-                  {user.role}
+                  {user?.role}
                 </span>
               </div>
               <div className="ml-4">

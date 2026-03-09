@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { logout, setAccessToken } from '../features/authSlice';
+import { logout } from '../features/authSlice';
 let store;
 
 export const injectStore = (_store) => {
@@ -26,13 +26,7 @@ const axiosInstance = axios.create({
 // Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    const isPublic = publicEndpoints.some((url) => config.url.includes(url));
-    const token = store?.getState().auth.accessToken;
-
-    if (!isPublic && token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-
+    // The browser natively handles HTTP-only cookies securely and automatically 
     return config;
   },
   (error) => Promise.reject(error)
@@ -56,14 +50,10 @@ axiosInstance.interceptors.response.use(
           baseURL: import.meta.env.VITE_API_URL || '/api/',
           withCredentials: true,
         });
+        await rawAxios.post('/auth/refresh-token');
 
-        const refreshResponse = await rawAxios.post('/auth/refresh-token');
-        const newAccessToken = refreshResponse.data.accessToken;
-
-        store.dispatch(setAccessToken(newAccessToken));
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-
-        return axiosInstance(originalRequest); // Retry original request
+        // Retry the original request
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
         store.dispatch(logout());
         return Promise.reject(refreshError);

@@ -16,10 +16,10 @@ import User from './models/user.model.js';
 import { updateAdminAnalytics } from './controllers/adminAnalytics.controllers.js';
 import { updateMerchantAnalytics } from './controllers/merchantAnalytics.controllers.js';
 
-dotenv.config()
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '../.env') })
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -60,7 +60,7 @@ wrapRoutes(app)
 if (process.env.NODE_ENV === 'production') {
     const clientDistPath = path.join(__dirname, '../client/dist');
     app.use(express.static(clientDistPath));
-    
+
     // Handle React routing, return all requests to React app
     app.get('*', (req, res) => {
         res.sendFile(path.join(clientDistPath, 'index.html'));
@@ -71,10 +71,24 @@ app.use(errorHandler);
 
 // Daily at midnight
 cron.schedule("0 0 * * *", async () => {
-    await updateAdminAnalytics();
-    const merchants = await User.find({ role: "merchant" }).select("_id");
-    for (const merchant of merchants) {
-        await updateMerchantAnalytics(merchant._id);
+    try {
+        console.log("[CRON] Starting daily midnight analytics updates...");
+        await updateAdminAnalytics();
+
+        const merchants = await User.find({ role: "merchant" }).select("_id");
+        for (const merchant of merchants) {
+            try {
+                await updateMerchantAnalytics(merchant._id);
+            } catch (merchantError) {
+                // Ignore failure for one merchant and continue the loop for the rest
+                console.error(`[CRON ERROR] Failed to update analytics for merchant ${merchant._id}:`, merchantError);
+                continue;
+            }
+        }
+        console.log("[CRON] Successfully completed daily midnight analytics updates.");
+    } catch (globalError) {
+        // Broad catch preventing an unhandled promise rejection from crashing the server
+        console.error("[CRON FATAL ERROR] Daily analytics job failed catastrophically:", globalError);
     }
 });
 
