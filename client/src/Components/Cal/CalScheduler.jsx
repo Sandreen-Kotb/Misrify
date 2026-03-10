@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { Loader2, X } from "lucide-react";
 
-// eslint-disable-next-line react/prop-types
 const CalScheduler = ({ isOpen, onClose }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate loading for Cal.com iframe
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 1000); // Adjust as needed
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -20,7 +18,7 @@ const CalScheduler = ({ isOpen, onClose }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             {isLoading ? (
                 <div
-                    className="max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl h-[450px] md:h-[550px] lg:h-[650px] 
+                    className="max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl h-[90vh] max-h-[650px]
                     border-0 shadow-2xl flex flex-col p-6 bg-gradient-to-br from-[#081120] via-[#15253F] to-[#081120]
                     rounded-3xl"
                 >
@@ -30,7 +28,7 @@ const CalScheduler = ({ isOpen, onClose }) => {
                 </div>
             ) : (
                 <div
-                    className="w-full sm:max-w-2xl md:max-w-4xl lg:max-w-5xl h-[450px] md:h-[550px] lg:h-[700px] 
+                    className="w-full sm:max-w-2xl md:max-w-4xl lg:max-w-5xl h-[90vh] max-h-[700px] 
                     border-0 shadow-2xl flex flex-col p-6 bg-gradient-to-br from-[#081120] via-[#15253F] to-[#081120]
                     rounded-3xl transform transition-all duration-300 ease-in-out
                     hover:shadow-[0_0_50px_rgba(110,119,134,0.3)]"
