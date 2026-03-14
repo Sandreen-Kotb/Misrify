@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../features/authSlice";
 import { Tooltip } from "react-tooltip";
 
-// eslint-disable-next-line react/display-name
 const Navbar = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -48,7 +47,7 @@ const Navbar = memo(() => {
       <nav className="h-16 flex justify-between items-center px-5 lg:px-10">
         <NavLink
           to="/"
-          className="font-jaro text-4xl tracking-wider font-bold text-title-blue uppercase"
+          className="font-jaro text-2xl md:text-3xl lg:text-4xl tracking-wider font-bold text-title-blue uppercase"
         >
           {/* <img src={logo} className="h-6 inline-block" alt="Logo" /> */}
           Misrify
@@ -76,6 +75,28 @@ const Navbar = memo(() => {
                 </NavLink>
               </li>
             ))}
+            {!isAuthenticated && (
+              <>
+                <li style={{ marginTop: '20px' }} className="uppercase font-semibold text-lg border-t border-gray-300 pt-5">
+                  <NavLink
+                    to="/login"
+                    onClick={handleClose}
+                    className="text-title-blue hover:text-dark-blue font-semibold uppercase relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-dark-blue after:transition-all after:duration-300 after:scale-x-0 hover:after:scale-x-100"
+                  >
+                    Login
+                  </NavLink>
+                </li>
+                <li className="uppercase font-semibold text-lg">
+                  <NavLink
+                    to="/signup"
+                    onClick={handleClose}
+                    className="text-title-blue hover:text-dark-blue font-semibold uppercase relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-dark-blue after:transition-all after:duration-300 after:scale-x-0 hover:after:scale-x-100"
+                  >
+                    Sign Up
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
           <div
             className="absolute top-4 right-4 cursor-pointer"
@@ -86,7 +107,7 @@ const Navbar = memo(() => {
         </div>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-x-6">
+        <div className="hidden md:flex items-center gap-x-4 lg:gap-x-6">
           {menuItems.map((item, index) => (
             <NavLink
               key={index}
@@ -134,18 +155,18 @@ const Navbar = memo(() => {
               </button>
             </>
           ) : (
-            <div className="flex gap-x-4">
+            <div className="hidden md:flex gap-x-4">
               <NavLink
                 to="/signup"
-                className="font-inter bg-main-blue hover:bg-white border-transparent hover:border-main-blue border-2 text-white hover:text-title-blue transition duration-400 ease-in py-2 px-7 rounded-xl
-                             font-semibold sm:px-2 sm:py-1 sm:text-sm sm:font-medium"
+                className="font-inter bg-main-blue hover:bg-white border-transparent hover:border-main-blue border-2 text-white hover:text-title-blue transition duration-400 ease-in
+                rounded-xl font-medium lg:font-semibold py-2 px-3 lg:px-7 md:text-sm"
               >
                 Sign Up
               </NavLink>
               <NavLink
                 to="/login"
-                className="font-inter bg-transparent text-main-blue hover:bg-main-blue border-2 border-title-blue hover:text-white transition duration-400 ease-in py-2 px-7 
-                             rounded-xl font-semibold sm:px-2 sm:py-1 sm:text-sm sm:font-medium"
+                className="font-inter bg-transparent text-main-blue hover:bg-main-blue border-2 border-title-blue hover:text-white transition duration-400 ease-in
+                 rounded-xl font-medium lg:font-semibold py-2 px-3 lg:px-7 md:text-sm"
               >
                 Login
               </NavLink>
