@@ -47,7 +47,7 @@ const Navbar = memo(() => {
       <nav className="h-16 flex justify-between items-center px-5 lg:px-10">
         <NavLink
           to="/"
-          className="font-jaro text-4xl tracking-wider font-bold text-title-blue uppercase"
+          className="font-jaro text-2xl md:text-3xl lg:text-4xl tracking-wider font-bold text-title-blue uppercase"
         >
           {/* <img src={logo} className="h-6 inline-block" alt="Logo" /> */}
           Misrify
@@ -107,7 +107,7 @@ const Navbar = memo(() => {
         </div>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-x-6">
+        <div className="hidden md:flex items-center gap-x-4 lg:gap-x-6">
           {menuItems.map((item, index) => (
             <NavLink
               key={index}
@@ -158,15 +158,15 @@ const Navbar = memo(() => {
             <div className="hidden md:flex gap-x-4">
               <NavLink
                 to="/signup"
-                className="font-inter bg-main-blue hover:bg-white border-transparent hover:border-main-blue border-2 text-white hover:text-title-blue transition duration-400 ease-in py-2 px-7 rounded-xl
-                             font-semibold sm:px-2 sm:py-1 sm:text-sm sm:font-medium"
+                className="font-inter bg-main-blue hover:bg-white border-transparent hover:border-main-blue border-2 text-white hover:text-title-blue transition duration-400 ease-in
+                rounded-xl font-medium lg:font-semibold py-2 px-3 lg:px-7 md:text-sm"
               >
                 Sign Up
               </NavLink>
               <NavLink
                 to="/login"
-                className="font-inter bg-transparent text-main-blue hover:bg-main-blue border-2 border-title-blue hover:text-white transition duration-400 ease-in py-2 px-7 
-                             rounded-xl font-semibold sm:px-2 sm:py-1 sm:text-sm sm:font-medium"
+                className="font-inter bg-transparent text-main-blue hover:bg-main-blue border-2 border-title-blue hover:text-white transition duration-400 ease-in
+                 rounded-xl font-medium lg:font-semibold py-2 px-3 lg:px-7 md:text-sm"
               >
                 Login
               </NavLink>

@@ -118,7 +118,7 @@ const Footer = () => {
         </div>
 
         <p className="px-16 py-4 text-center text-sm text-gray-400">
-          © 2025 the creation.design | All rights raserved by Misrify
+          © 2025 the creation.design | All rights reserved by Misrify
         </p>
       </footer>
     </>
