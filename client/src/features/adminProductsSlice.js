@@ -11,6 +11,14 @@ export const getRequestedProducts = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { requestedProducts, loading } = getState().products;
+      if (requestedProducts.length > 0 || loading) {
+        return false;
+      }
+    },
   }
 );
 
@@ -24,6 +32,14 @@ export const getAllProducts = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { products, loading } = getState().products;
+      if (products.length > 0 || loading) {
+        return false;
+      }
+    },
   }
 );
 

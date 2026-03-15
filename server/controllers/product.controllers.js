@@ -36,10 +36,6 @@ export const getRequestedProducts = async (req, res, next) => {
 
 
 
-    if (!requestedProducts || requestedProducts.length === 0) {
-        return next(new AppError("No Requested Products Found", 404))
-    }
-
     res.status(200).json({ success: true, requestedProducts })
 }
 
@@ -87,22 +83,22 @@ export const approveOrRejectProduct = async (req, res, next) => {
 
     await ProductToApprove.save();
 
-    if (ProductToApprove.brand !== null) {
+    if (ProductToApprove.brand !== null && ProductToApprove.brand.owner) {
         // const merchant = await User.findById(ProductToApprove.brand.owner);
 
         if (ProductToApprove.isApproved) {
             await Notification.create({
-                receivers: [ProductToApprove.brand.owner._id], // Changed to receivers array
+                receivers: [ProductToApprove.brand.owner._id ? ProductToApprove.brand.owner._id : ProductToApprove.brand.owner], // Changed to receivers array
                 sender: "Misrify Store", // Updated to Misrify Store
-                content: `Product ${ProductToApprove.name} has been approved`, // Changed to content
+                content: `Product ${ProductToApprove.name} has been approved`, 
                 type: "product",
                 isRead: false,
             });
         } else {
             await Notification.create({
-                receivers: [ProductToApprove.brand.owner._id], // Changed to receivers array
+                receivers: [ProductToApprove.brand.owner._id ? ProductToApprove.brand.owner._id : ProductToApprove.brand.owner], // Changed to receivers array
                 sender: "Misrify Store", // Updated to Misrify Store
-                content: `Product ${ProductToApprove.name} has been rejected`, // Changed to content
+                content: `Product ${ProductToApprove.name} has been rejected`,
                 type: "product",
                 isRead: false,
             });
@@ -159,13 +155,15 @@ export const createProduct = async (req, res, next) => {
         })
 
     } else {
-        await Notification.create({
-            receivers: [brandMerchant.owner._id], // Changed to receivers array
-            sender: "Misrify Store", // Updated to Misrify Store
-            content: `Product ${name} has been created by Misrify Store for your brand named ${brandMerchant.name}`, // Changed to content
-            type: "product",
-            isRead: false,
-        })
+        if (brandMerchant && brandMerchant.owner) {
+            await Notification.create({
+                receivers: [brandMerchant.owner._id], // Changed to receivers array
+                sender: "Misrify Store", // Updated to Misrify Store
+                content: `Product ${name} has been created by Misrify Store for your brand named ${brandMerchant.name}`, // Changed to content
+                type: "product",
+                isRead: false,
+            })
+        }
     }
 
     res.status(201).json({ success: true, message: "Product Created Successfully", product })
@@ -220,13 +218,15 @@ export const editProduct = async (req, res, next) => {
 
         const brandMerchant = await Brand.findById(brandId).populate("owner");
 
-        await Notification.create({
-            receivers: [brandMerchant.owner._id], // Changed to receivers array
-            sender: "Misrify Store", // Updated to Misrify Store
-            content: `Product ${name} has been updated by Misrify Store`, // Changed to content
-            type: "product",
-            isRead: false,
-        })
+        if (brandMerchant && brandMerchant.owner) {
+            await Notification.create({
+                receivers: [brandMerchant.owner._id], // Changed to receivers array
+                sender: "Misrify Store", // Updated to Misrify Store
+                content: `Product ${name} has been updated by Misrify Store`, // Changed to content
+                type: "product",
+                isRead: false,
+            })
+        }
     }
     res.status(200).json({ success: true, message: "Product Updated Successfully", product })
 }
@@ -265,14 +265,16 @@ export const deleteProduct = async (req, res, next) => {
     if (product.brand) {
         const brandMerchant = await Brand.findById(product.brand).populate("owner");
 
-        // Create notification
-        await Notification.create({
-            receivers: [brandMerchant.owner._id],
-            sender: "Misrify Store",
-            content: `Product ${product.name} has been deleted by ${user.name}`,
-            type: "product",
-            isRead: false,
-        });
+        if (brandMerchant && brandMerchant.owner) {
+            // Create notification
+            await Notification.create({
+                receivers: [brandMerchant.owner._id],
+                sender: "Misrify Store",
+                content: `Product ${product.name} has been deleted by ${user.name}`,
+                type: "product",
+                isRead: false,
+            });
+        }
     }
 
     res.status(200).json({ success: true, message: "Product Deleted Successfully" });

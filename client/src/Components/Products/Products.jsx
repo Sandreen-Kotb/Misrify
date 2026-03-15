@@ -61,6 +61,8 @@ const Products = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -230,6 +232,10 @@ const Products = () => {
       setError("Product name is required.");
       return false;
     }
+    if (!formData.imgUrl) {
+      setError("Product image is required. Please upload an image.");
+      return false;
+    }
     if (!formData.categoryId) {
       setError("Category is required.");
       return false;
@@ -273,9 +279,11 @@ const Products = () => {
     }
     // Validate sizes
     if (formData.sizes) {
-      const sizesArray = formData.sizes.split(",").map((s) => s.trim()).filter((s) => s);
-      if (sizesArray.some((s) => !/^[a-zA-Z0-9\s]+$/.test(s))) {
-        setError("Sizes must contain only letters, numbers, and spaces (e.g., S, M, L).");
+      const sizesArray = formData.sizes.split(",").map((s) => s.trim().toUpperCase()).filter((s) => s);
+      const validSizes = ["XS", "S", "M", "L", "XL", "XXL"];
+      const invalidSize = sizesArray.find((s) => !validSizes.includes(s));
+      if (invalidSize) {
+        setError(`Invalid size: ${invalidSize}. Allowed sizes are XS, S, M, L, XL, XXL.`);
         return false;
       }
     }
@@ -305,7 +313,7 @@ const Products = () => {
         quantityInStock: Number(formData.quantityInStock),
         price: Number(formData.price),
         colors: formData.colors,
-        sizes: sizesArray,
+        sizes: sizesArray.map(s => s.toUpperCase()),
         isDiscounted: formData.isDiscounted,
         discountAmount: Number(formData.discountAmount),
         imgUrl: formData.imgUrl,
@@ -359,8 +367,8 @@ const Products = () => {
     const submitText = isEdit ? "Update" : "Create";
 
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-        <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-2xl relative">
+      <div className="fixed inset-0 bg-black bg-opacity-60 z-50 overflow-y-auto w-full h-full flex justify-center py-10">
+        <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-2xl relative my-auto h-auto min-h-min">
           <button
             type="button"
             onClick={() => (isEdit ? setShowEditModal(false) : setShowCreateModal(false))}
@@ -689,12 +697,16 @@ const Products = () => {
               </tr>
             </thead>
             <tbody>
-              {arrProducts.length > 0 ? (
-                arrProducts.map((product, index) => (
-                  <tr
-                    key={product._id}
-                    className={index % 2 !== 0 ? "bg-[#F9F9FF]" : ""}
-                  >
+              {(() => {
+                const totalPages = Math.ceil(arrProducts.length / pageSize);
+                const currentProducts = arrProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+                return currentProducts.length > 0 ? (
+                  currentProducts.map((product, index) => (
+                    <tr
+                      key={product._id}
+                      className={index % 2 !== 0 ? "bg-[#F9F9FF]" : ""}
+                    >
                     <td className="py-4 px-6 w-16 h-16 mx-auto box-content flex justify-center">
                       <img
                         src={product?.imgUrl || productImg}
@@ -772,9 +784,57 @@ const Products = () => {
                     No Products found
                   </td>
                 </tr>
-              )}
+              );
+            })()}
             </tbody>
           </table>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center p-4 bg-[#F7F8FA] border-t border-light-grey rounded-b-xl gap-4 flex-wrap">
+            <div className="flex items-center text-sm text-gray-700">
+              <label htmlFor="pageSize" className="mr-2 font-medium">Items per page:</label>
+              <select
+                id="pageSize"
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="border border-gray-300 rounded-md p-1 bg-white focus:outline-none focus:ring-1 focus:ring-main-blue"
+              >
+                {[10, 20, 30, 50, 100].map(size => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
+              </select>
+            </div>
+
+            {(() => {
+              const totalPages = Math.ceil(arrProducts.length / pageSize) || 1;
+              return (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-700 font-medium">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1 bg-white border border-gray-300 rounded shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1 bg-white border border-gray-300 rounded shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition duration-150"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
 
           {showDeleteModal && (
             <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">

@@ -26,7 +26,7 @@ import { GiShop } from "react-icons/gi";
 import { BsEnvelope } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -684,7 +684,8 @@ const SwiperSection = ({ title, data, type, onEdit, onDelete }) => {
   return (
     <div className="mb-10">
       <Swiper
-        modules={[Navigation, Pagination]}
+        modules={[Navigation, Pagination, Autoplay]}
+        autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
         breakpoints={{
           0: { slidesPerView: 1, spaceBetween: 20 },
           768: { slidesPerView: 2, spaceBetween: 25 },
@@ -698,42 +699,51 @@ const SwiperSection = ({ title, data, type, onEdit, onDelete }) => {
           data.map((item) => (
             <SwiperSlide
               key={item._id}
-              className="w-80 bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+              className="relative h-[340px] rounded-2xl overflow-hidden shadow-lg group cursor-pointer"
             >
               <img
                 src={item.imgUrl || (type === "category" ? categoryImg : brandImg)}
                 alt={item.name}
-                className="h-56 w-full object-cover bg-gray-200"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
               />
-              <div className="p-4">
-                <h6 className="font-bold text-main-blue text-xl mb-3">
+              
+              {/* Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              {/* Content overlay */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                <div className="mb-auto flex justify-end">
+                  {/* Absolute Top Badge */}
+                  <span className="bg-white/20 backdrop-blur-md text-white text-xs px-3 py-1 rounded-full border border-white/30 flex items-center gap-1 shadow-sm">
+                    <FaRegCheckCircle /> Active
+                  </span>
+                </div>
+
+                <h6 className="font-bold text-white text-2xl mb-2 tracking-wide drop-shadow-md">
                   {item.name}
                 </h6>
-                <p className="mb-2 text-sm font-normal text-dark-grey">
-                  {item.description}
+                <p className="text-gray-200 text-sm mb-6 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                  {item.description || "No description provided."}
                 </p>
-                <div className="flex justify-between items-center">
-                  <span className="badge bg-green-100 text-green-600 text-sm px-4 py-3 rounded flex items-center gap-1">
-                    <FaRegCheckCircle /> Available
-                  </span>
-                  <div className="flex gap-3">
+
+                {/* Actions Row */}
+                <div className="flex justify-between items-center border-t border-white/20 pt-4 mt-auto">
+                  <div className="flex gap-4">
                     <button
                       onClick={() => onEdit(item._id)}
-                      className="text-blue-900 hover:text-main-blue transition duration-300 transform hover:scale-110"
+                      className="text-white hover:text-blue-400 bg-white/10 hover:bg-white/20 p-2 rounded-full backdrop-blur-sm transition duration-300"
                       data-tooltip-id="Edit"
                       data-tooltip-content="Edit"
-                      data-tooltip-place="bottom"
                     >
-                      <FaEdit />
+                      <FaEdit size={16} />
                     </button>
                     <button
                       onClick={() => onDelete(item._id)}
-                      className="text-red-500 hover:text-red-600 transition duration-300 transform hover:scale-110"
+                      className="text-red-400 hover:text-red-300 bg-white/10 hover:bg-white/20 p-2 rounded-full backdrop-blur-sm transition duration-300"
                       data-tooltip-id="Delete"
                       data-tooltip-content="Delete"
-                      data-tooltip-place="bottom"
                     >
-                      <FaTrashAlt />
+                      <FaTrashAlt size={16} />
                     </button>
                   </div>
                 </div>
@@ -748,12 +758,12 @@ const SwiperSection = ({ title, data, type, onEdit, onDelete }) => {
       </Swiper>
       <div className="flex justify-between">
         <button
-          className={`swiper-button-${title.toLowerCase()}-prev text-2xl text-main-blue hover:bg-gray-200 rounded-full p-2 transition duration-300 transform hover:scale-110`}
+          className={`swiper-button-${title.toLowerCase()}-prev text-2xl text-main-blue hover:bg-gray-200 rounded-full p-2 transition duration-500 transform hover:scale-110`}
         >
           <FaArrowLeft />
         </button>
         <button
-          className={`swiper-button-${title.toLowerCase()}-next text-2xl text-main-blue hover:bg-gray-200 rounded-full p-2 transition duration-300 transform hover:scale-110`}
+          className={`swiper-button-${title.toLowerCase()}-next text-2xl text-main-blue hover:bg-gray-200 rounded-full p-2 transition duration-500 transform hover:scale-110`}
         >
           <FaArrowRight />
         </button>

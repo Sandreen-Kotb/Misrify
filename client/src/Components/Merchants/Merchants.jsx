@@ -50,7 +50,7 @@ const Merchants = () => {
       .catch((error) => {
         setTimeout(() => {
           showToast("there is something wrong 👎", "error");
-            }, 0);
+        }, 0);
         console.error("Error deleting user:", error);
 
       });
@@ -83,14 +83,14 @@ const Merchants = () => {
         setTimeout(() => {
           showToast("merchant has been updated 👍", "success");
         }, 0);
-          dispatch(getAllMerchants());
+        dispatch(getAllMerchants());
 
       })
       .catch((error) => {
         setTimeout(() => {
           showToast("there is something wrong 👎", "error");
         }, 0);
-    console.error("Error editing user:", error);
+        console.error("Error editing user:", error);
       });
   };
 

@@ -11,6 +11,14 @@ export const getAllCategories = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { categories, categoryLoading } = getState().Categories;
+      if (categories.length > 0 || categoryLoading) {
+        return false;
+      }
+    },
   }
 );
 
