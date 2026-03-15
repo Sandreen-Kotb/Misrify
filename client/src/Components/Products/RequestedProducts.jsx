@@ -38,7 +38,7 @@ const RequestedProducts = () => {
     }, [dispatch, isSubmitting]);
 
     const handleToggleApproval = async (productId, isApproved) => {
-        setIsSubmitting(productId);
+        setIsSubmitting({ id: productId, action: isApproved ? 'approve' : 'reject' });
         setError(null);
         setSuccess(null);
         try {
@@ -121,37 +121,42 @@ const RequestedProducts = () => {
                                         </td>
                                         {userRole === "admin" && (
                                             <td>
-                                                <div className="py-4 px-6 text-center space-x-4 flex justify-center items-center">
-                                                    <button
-                                                        onClick={() => handleToggleApproval(product._id, true)}
-                                                        className="text-green-500 hover:text-green-600 transition duration-300 transform hover:scale-110"
-                                                        data-tooltip-id="Approve"
-                                                        data-tooltip-content="Approve"
-                                                        data-tooltip-place="bottom"
-                                                        aria-label="Approve product"
-                                                        disabled={isSubmitting === product._id}
-                                                    >
-                                                        {isSubmitting === product._id && !product.isApproved ? (
-                                                            <TailSpin color="#22C55E" height={20} width={20} />
-                                                        ) : (
-                                                            <FaCheck />
-                                                        )}
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleToggleApproval(product._id, false)}
-                                                        className="text-red-500 hover:text-red-600 transition duration-300 transform hover:scale-110"
-                                                        data-tooltip-id="Reject"
-                                                        data-tooltip-content="Reject"
-                                                        data-tooltip-place="bottom"
-                                                        aria-label="Reject product"
-                                                        disabled={isSubmitting === product._id}
-                                                    >
-                                                        {isSubmitting === product._id && product.isApproved ? (
-                                                            <TailSpin color="#EF4444" height={20} width={20} />
-                                                        ) : (
-                                                            <FaTimes />
-                                                        )}
-                                                    </button>
+                                                <div className="py-4 px-6 text-center space-x-4 flex justify-center items-center min-h-[60px]">
+                                                    {(!isSubmitting || isSubmitting.id !== product._id || isSubmitting.action === 'approve') && (
+                                                        <button
+                                                            onClick={() => handleToggleApproval(product._id, true)}
+                                                            className="text-green-500 hover:text-green-600 transition duration-300 transform hover:scale-110"
+                                                            data-tooltip-id="Approve"
+                                                            data-tooltip-content="Approve"
+                                                            data-tooltip-place="bottom"
+                                                            aria-label="Approve product"
+                                                            disabled={isSubmitting?.id === product._id}
+                                                        >
+                                                            {isSubmitting?.id === product._id && isSubmitting?.action === 'approve' ? (
+                                                                <TailSpin color="#22C55E" height={20} width={20} />
+                                                            ) : (
+                                                                <FaCheck />
+                                                            )}
+                                                        </button>
+                                                    )}
+                                                    
+                                                    {(!isSubmitting || isSubmitting.id !== product._id || isSubmitting.action === 'reject') && (
+                                                        <button
+                                                            onClick={() => handleToggleApproval(product._id, false)}
+                                                            className="text-red-500 hover:text-red-600 transition duration-300 transform hover:scale-110"
+                                                            data-tooltip-id="Reject"
+                                                            data-tooltip-content="Reject"
+                                                            data-tooltip-place="bottom"
+                                                            aria-label="Reject product"
+                                                            disabled={isSubmitting?.id === product._id}
+                                                        >
+                                                            {isSubmitting?.id === product._id && isSubmitting?.action === 'reject' ? (
+                                                                <TailSpin color="#EF4444" height={20} width={20} />
+                                                            ) : (
+                                                                <FaTimes />
+                                                            )}
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         )}

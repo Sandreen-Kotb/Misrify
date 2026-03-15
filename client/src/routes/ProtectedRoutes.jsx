@@ -2,9 +2,9 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { TailSpin } from 'react-loader-spinner';
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ allowedRoles }) => {
     const location = useLocation();
-    const { isAuthenticated, loading, hasCheckedAuth } = useSelector((state) => state.auth);
+    const { isAuthenticated, loading, hasCheckedAuth, user } = useSelector((state) => state.auth);
 
     if (loading || !hasCheckedAuth) {
         return (
@@ -14,11 +14,16 @@ const ProtectedRoute = () => {
         );
     }
 
-    return isAuthenticated ? (
-        <Outlet />
-    ) : (
-        <Navigate to="/login" state={{ from: location }} replace />
-    );
+    if (!isAuthenticated) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    // Role-Based Guard Check
+    if (allowedRoles && !allowedRoles.includes(user?.role)) {
+        return <Navigate to="/" replace />;
+    }
+
+    return <Outlet />;
 };
 
 export default ProtectedRoute;

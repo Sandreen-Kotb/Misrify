@@ -26,11 +26,13 @@ import RequestedProducts from '../Components/Products/RequestedProducts';
 import { MerchantOrders } from '../Components/MerchantOrders/MerchantOrders';
 import MerchantReviews from '../Components/MerchantReviews/MerchantReviews';
 import ProtectedRoute from './ProtectedRoutes';
+import ErrorBoundary from '../Components/Errors/ErrorBoundary';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
+    errorElement: <ErrorBoundary />,
     children: [
       { index: true, element: <Home /> },
       { path: "/aboutus", element: <AboutUs /> },
@@ -57,21 +59,37 @@ const router = createBrowserRouter([
   },
   {
     path: '/analytics',
-    element: <ProtectedRoute />,
+    element: <ProtectedRoute allowedRoles={['admin', 'merchant']} />,
+    errorElement: <ErrorBoundary />,
     children: [
       {
         element: <DashboardLayout />,
         children: [
           { index: true, element: <Analytics /> },
-          { path: 'users', element: <Users /> },
-          { path: 'merchants', element: <Merchants /> },
+          // Shared analytical routes
           { path: 'products', element: <Products /> },
-          { path: 'categories', element: <Categories /> },
-          { path: 'support', element: <Support /> },
-          { path: 'messages', element: <Messages /> },
           { path: 'requested-products', element: <RequestedProducts /> },
-          { path: 'orders', element: <MerchantOrders /> },
-          { path: 'reviews', element: <MerchantReviews /> },
+          { path: 'support', element: <Support /> },
+
+          // Admin ONLY Routes
+          {
+            element: <ProtectedRoute allowedRoles={['admin']} />,
+            children: [
+              { path: 'users', element: <Users /> },
+              { path: 'merchants', element: <Merchants /> },
+              { path: 'categories', element: <Categories /> },
+              { path: 'messages', element: <Messages /> },
+            ],
+          },
+
+          // MERCHANT ONLY Routes
+          {
+            element: <ProtectedRoute allowedRoles={['merchant']} />,
+            children: [
+              { path: 'orders', element: <MerchantOrders /> },
+              { path: 'reviews', element: <MerchantReviews /> },
+            ],
+          },
         ],
       },
     ],
