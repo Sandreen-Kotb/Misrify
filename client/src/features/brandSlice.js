@@ -11,6 +11,14 @@ export const getAllBrands = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { brands, brandLoading } = getState().Brands;
+      if (brands.length > 0 || brandLoading) {
+        return false;
+      }
+    },
   }
 );
 

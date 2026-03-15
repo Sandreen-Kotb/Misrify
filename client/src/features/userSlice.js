@@ -24,6 +24,14 @@ export const getAllUsers = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { users, usersLoading } = getState().user;
+      if (users.length > 0 || usersLoading) {
+        return false;
+      }
+    },
   }
 );
 
@@ -37,6 +45,14 @@ export const getAllMerchants = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { merchants, merchantsLoading } = getState().user;
+      if (merchants.length > 0 || merchantsLoading) {
+        return false;
+      }
+    },
   }
 );
 

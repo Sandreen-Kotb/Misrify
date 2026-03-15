@@ -11,6 +11,14 @@ export const getMerchantProducts = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to fetch products");
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { products, loading } = getState().merchantProducts;
+      if (products.length > 0 || loading) {
+        return false;
+      }
+    },
   }
 );
 
