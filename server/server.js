@@ -93,6 +93,9 @@ cron.schedule("0 0 * * *", async () => {
 });
 
 app.listen(port, () => {
-    console.log('Server Running in ' + process.env.NODE_ENV + 'Environment on port ' + port);
+    console.log('Server Running in ' + process.env.NODE_ENV + ' Environment on port ' + port);
     connectDb()
 })
+
+export default app;
+
