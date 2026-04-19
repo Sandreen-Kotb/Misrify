@@ -56,18 +56,8 @@ app.use(cookieParser())
 // API routes
 wrapRoutes(app)
 
-// Serve static files from React app in production
-if (process.env.NODE_ENV === 'production') {
-    const clientDistPath = path.join(__dirname, '../client/dist');
-    app.use(express.static(clientDistPath));
-
-    // Handle React routing, return all requests to React app
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(clientDistPath, 'index.html'));
-    });
-}
-
 app.use(errorHandler);
+
 
 // Daily at midnight
 cron.schedule("0 0 * * *", async () => {
